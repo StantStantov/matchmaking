@@ -11,7 +11,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/lesta-battleship/server-core/pkg/matchmaking/packets"
+	"github.com/lesta-battleship/matchmaking/pkg/packets"
 
 	"github.com/gorilla/websocket"
 )

@@ -1,4 +1,4 @@
-module github.com/lesta-battleship/server-core
+module github.com/lesta-battleship/matchmaking
 
 go 1.24.4
 
