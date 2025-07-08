@@ -11,7 +11,7 @@ func SetupRouter(router gin.IRouter, websocketServer *WebsocketServer, engine *m
 	rankedHandler := HandleGetJoinRanked(websocketServer, engine)
 	customHandler := HandleGetJoinCustom(websocketServer, engine)
 
-	router.GET("/join/random", randomHandler)
-	router.GET("/join/ranked", rankedHandler)
-	router.GET("/join/custom", customHandler)
+	router.GET("/matchmaking/random", randomHandler)
+	router.GET("/matchmaking/ranked", rankedHandler)
+	router.GET("/matchmaking/custom", customHandler)
 }
