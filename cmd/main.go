@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"os"
+
 	"github.com/lesta-battleship/matchmaking/internal/api/websocket"
 	"github.com/lesta-battleship/matchmaking/internal/app/multiplayer"
 	"github.com/lesta-battleship/matchmaking/internal/app/multiplayer/actors/matchmakers"
@@ -8,6 +12,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+const backendPortEnv = "BACKEND_PORT"
 
 func main() {
 	matchmakerRegistry := registries.NewMatchmakerRegistry()
@@ -28,5 +34,11 @@ func main() {
 
 	websocket.SetupRouter(router, websocketServer, engine)
 
-	router.Run(":8080")
+	port, ok := os.LookupEnv(backendPortEnv)
+	if !ok {
+		log.Printf("Main: ENV %q is not defined", backendPortEnv)
+
+		return
+	}
+	router.Run(fmt.Sprintf(":%s", port))
 }
