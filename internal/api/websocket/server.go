@@ -1,9 +1,11 @@
 package websocket
 
 import (
+	"fmt"
 	"log"
-	"net/http"
 
+	"github.com/gin-gonic/gin"
+	"github.com/lesta-battleship/matchmaking/internal/api/websocket/middlewares"
 	"github.com/lesta-battleship/matchmaking/internal/app/multiplayer/actors"
 	"github.com/lesta-battleship/matchmaking/internal/infra"
 
@@ -25,20 +27,20 @@ func NewWebsocketServer() *WebsocketServer {
 	}
 }
 
-func (s *WebsocketServer) Connect(w http.ResponseWriter, r *http.Request) (actors.ClientInterfacer, error) {
-	conn, err := s.upgrader.Upgrade(w, r, nil)
+func (s *WebsocketServer) Connect(c *gin.Context) (actors.ClientInterfacer, error) {
+	userId := middlewares.GetUserId(c)
+	if userId == "" {
+		return nil, fmt.Errorf("User ID is Empty")
+	}
+
+	conn, err := s.upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	connId := r.Header.Get("X-XSRF-TOKEN")
-	if connId == "" {
-		log.Println("WebsocketServer: Connection ID is empty")
+	websocketInterfacer := infra.NewWebsocketInterfacer(userId, conn)
 
-		connId = infra.GenerateId()
-	}
-
-	websocketInterfacer := infra.NewWebsocketInterfacer(connId, conn)
+	log.Printf("WebsocketServer: Created WebsocketInterfacer %q", websocketInterfacer.Id())
 
 	return websocketInterfacer, nil
 }

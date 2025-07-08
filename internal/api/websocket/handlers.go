@@ -10,7 +10,12 @@ import (
 func HandleGetJoinRandom(websocketServer *WebsocketServer, engine *multiplayer.Engine) gin.HandlerFunc {
 	return gin.HandlerFunc(
 		func(c *gin.Context) {
-			interfacer, _ := websocketServer.Connect(c.Writer, c.Request)
+			interfacer, err := websocketServer.Connect(c)
+			if err != nil {
+				c.Error(err)
+
+				return
+			}
 			go interfacer.ReadPump()
 			go interfacer.WritePump()
 
@@ -23,7 +28,12 @@ func HandleGetJoinRandom(websocketServer *WebsocketServer, engine *multiplayer.E
 func HandleGetJoinRanked(websocketServer *WebsocketServer, engine *multiplayer.Engine) gin.HandlerFunc {
 	return gin.HandlerFunc(
 		func(c *gin.Context) {
-			interfacer, _ := websocketServer.Connect(c.Writer, c.Request)
+			interfacer, err := websocketServer.Connect(c)
+			if err != nil {
+				c.Error(err)
+
+				return
+			}
 			go interfacer.ReadPump()
 			go interfacer.WritePump()
 
@@ -36,7 +46,12 @@ func HandleGetJoinRanked(websocketServer *WebsocketServer, engine *multiplayer.E
 func HandleGetJoinCustom(websocketServer *WebsocketServer, engine *multiplayer.Engine) gin.HandlerFunc {
 	return gin.HandlerFunc(
 		func(c *gin.Context) {
-			interfacer, _ := websocketServer.Connect(c.Writer, c.Request)
+			interfacer, err := websocketServer.Connect(c)
+			if err != nil {
+				c.Error(err)
+
+				return
+			}
 			go interfacer.ReadPump()
 			go interfacer.WritePump()
 
