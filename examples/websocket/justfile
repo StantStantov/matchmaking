@@ -6,10 +6,10 @@ run-server:
   ./tmp/server
 
 run-random:
-  ./tmp/client -path=/join/random
+  ./tmp/client -path=/matchmaking/random
 
 run-ranked:
-  ./tmp/client -path=/join/ranked
+  ./tmp/client -path=/matchmaking/ranked
 
 run-custom:
-  ./tmp/client -path=/join/custom
+  ./tmp/client -path=/matchmaking/custom

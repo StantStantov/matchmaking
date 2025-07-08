@@ -1,0 +1,10 @@
+{$HOST_ADDR} {
+  handle /matchmaking/* {
+    @websockets {
+      header Connection *Upgrade*
+      header Upgrade websocket
+    }
+
+    reverse_proxy @websockets server:{$BACKEND_PORT}
+  }
+}
