@@ -1,0 +1,30 @@
+services:
+  server:
+    container_name: server
+    image: lesta-start-battleship/matchmaking:prod
+    build:
+      context: ../
+      dockerfile: build/server.dockerfile
+      target: runner
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT}
+
+  caddy:
+    container_name: caddy
+    image: lesta-start-battleship/proxy:prod
+    build:
+      context: ../
+      dockerfile: build/caddy.dockerfile
+    environment:
+      - HOST_ADDR=${HOST_ADDR}
+      - BACKEND_PORT=${BACKEND_PORT}
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    ports:
+      - "80:80"
+      - "443:443"
+
+volumes:
+  caddy-data:
+  caddy-config:
