@@ -1,0 +1,13 @@
+services:
+  server:
+    container_name: server
+    image: lesta-start-battleship/matchmaking:dev
+    build:
+      context: ../
+      dockerfile: build/server.dockerfile
+      target: runner
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT}
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+
