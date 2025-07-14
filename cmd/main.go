@@ -8,6 +8,8 @@ import (
 	"github.com/lesta-battleship/matchmaking/internal/api/websocket"
 	"github.com/lesta-battleship/matchmaking/internal/app/multiplayer"
 	"github.com/lesta-battleship/matchmaking/internal/app/multiplayer/actors/matchmakers"
+	"github.com/lesta-battleship/matchmaking/internal/infra"
+	"github.com/lesta-battleship/matchmaking/internal/infra/kafka"
 	"github.com/lesta-battleship/matchmaking/internal/infra/registries"
 
 	"github.com/gin-gonic/gin"
@@ -16,6 +18,7 @@ import (
 const (
 	backendPortEnv   = "BACKEND_PORT"
 	apiGatewayUrlEnv = "API_GATEWAY_URL"
+	kafkaAddrEnv     = "KAFKA_ADDR"
 )
 
 func main() {
@@ -31,6 +34,14 @@ func main() {
 
 		return
 	}
+	kafkaAddr, ok := os.LookupEnv(kafkaAddrEnv)
+	if !ok {
+		log.Printf("Main: ENV %q is not defined", kafkaAddrEnv)
+
+		return
+	}
+
+	eventListener := kafka.NewKafkaEventListener(infra.GenerateId(), kafkaAddr)
 
 	matchmakerRegistry := registries.NewMatchmakerRegistry()
 	roomRegistry := registries.NewRoomRegistry()
@@ -43,6 +54,7 @@ func main() {
 	engine.CreateMatchmaker(matchmakers.RandomMatch)
 	engine.CreateMatchmaker(matchmakers.RankedMatch)
 	engine.CreateMatchmaker(matchmakers.CustomMatch)
+	engine.CreateGuildMatchmaker(eventListener)
 
 	websocketServer := websocket.NewWebsocketServer()
 
