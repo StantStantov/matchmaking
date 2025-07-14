@@ -13,9 +13,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const backendPortEnv = "BACKEND_PORT"
+const (
+	backendPortEnv   = "BACKEND_PORT"
+	apiGatewayUrlEnv = "API_GATEWAY_URL"
+)
 
 func main() {
+	port, ok := os.LookupEnv(backendPortEnv)
+	if !ok {
+		log.Printf("Main: ENV %q is not defined", backendPortEnv)
+
+		return
+	}
+	apiGatewayUrl, ok := os.LookupEnv(apiGatewayUrlEnv)
+	if !ok {
+		log.Printf("Main: ENV %q is not defined", apiGatewayUrlEnv)
+
+		return
+	}
+
 	matchmakerRegistry := registries.NewMatchmakerRegistry()
 	roomRegistry := registries.NewRoomRegistry()
 	playerRegistry := registries.NewPlayerRegistry()
@@ -32,13 +48,7 @@ func main() {
 
 	router := gin.Default()
 
-	websocket.SetupRouter(router, websocketServer, engine)
+	websocket.SetupRouter(router, apiGatewayUrl, websocketServer, engine)
 
-	port, ok := os.LookupEnv(backendPortEnv)
-	if !ok {
-		log.Printf("Main: ENV %q is not defined", backendPortEnv)
-
-		return
-	}
 	router.Run(fmt.Sprintf(":%s", port))
 }
